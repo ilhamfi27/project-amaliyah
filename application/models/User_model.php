@@ -17,6 +17,7 @@ class User_model extends CI_Model {
         ');
         $this->db->from($this->table);
         $this->db->join('prodi','prodi.id = users.id_prodi');
+        $this->db->where('admin', 'f');
         return $this->db->get();
     }
 
@@ -37,5 +38,9 @@ class User_model extends CI_Model {
     public function delete($where){
         $this->db->where($where);
         $this->db->delete($this->table);
+    }
+
+    public function cek_admin_login($where){
+        return $this->db->get_where($this->table, $where);
     }
 }
