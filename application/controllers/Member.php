@@ -13,6 +13,12 @@ class Member extends CI_Controller {
 		$this->load->view('member/index', $data);
 	}
 
+    public function delete_data($id){
+        $where = array('id' => $id);
+        $this->user_model->delete($where);
+        redirect('member/index');
+    }
+
 	private function resource_views(){
 		$this->load->view('resources/navbar');
 		$this->load->view('resources/sidenav');
