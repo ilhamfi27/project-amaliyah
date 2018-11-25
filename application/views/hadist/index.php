@@ -78,10 +78,6 @@ desired effect
       <h1>
         <?php echo ucwords($this->router->fetch_class()); ?>
       </h1>
-      <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i> Level</a></li>
-        <li class="active">Here</li>
-      </ol>
     </section>
 
     <!-- Main content -->
@@ -94,7 +90,7 @@ desired effect
             </div>
             <div class="box-body">
               
-            <table id="list-amaliyah" class="table table-bordered table-hover">
+            <table id="list-data" class="table table-bordered table-hover">
                 <thead>
                 <tr>
                   <th>No</th>
@@ -276,7 +272,7 @@ desired effect
 <!-- page script -->
 <script>
   $(function () {
-    $('#list-amaliyah').DataTable()
+    $('#list-data').DataTable()
   });
 </script>
 </body>

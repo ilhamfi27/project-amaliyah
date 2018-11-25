@@ -60,6 +60,12 @@ class Hadist extends CI_Controller {
         redirect('hadist/index');
     }
 
+	public function detail($id){
+        $where = array('id' => $id);
+		$data['hadist'] = $this->hadist_model->detail($where)->row();
+        $this->resource_views();
+        $this->load->view('hadist/detail',$data);
+	}
 
 	private function resource_views(){
 		$this->load->view('resources/navbar');

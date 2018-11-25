@@ -23,9 +23,18 @@ scratch. This page gets rid of all links and provides the needed markup only.
 	<link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/skins/_all-skins.min.css">
 
 	<link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/skins/skin-red.min.css">
+
+	<!-- Morris chart -->
+	<link rel="stylesheet" href="<?php echo base_url(); ?>vendor/morris.js/morris.css">
+	<!-- jvectormap -->
+	<link rel="stylesheet" href="<?php echo base_url(); ?>vendor/jvectormap/jquery-jvectormap.css">
+	<!-- Date Picker -->
+	<link rel="stylesheet" href="<?php echo base_url(); ?>vendor/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
+	<!-- Daterange picker -->
+	<link rel="stylesheet" href="<?php echo base_url(); ?>vendor/bootstrap-daterangepicker/daterangepicker.css">
   <!-- data tables -->
 	<link rel="stylesheet" href="<?php echo base_url(); ?>vendor/datatables.net-bs/css/dataTables.bootstrap.min.css">
-
+	<!-- bootstrap wysihtml5 - text editor -->
 	<link rel="stylesheet" href="<?php echo base_url(); ?>vendor/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
 
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -61,7 +70,7 @@ desired effect
 -->
 <body class="hold-transition skin-red sidebar-mini">
 <div class="wrapper">
-
+  
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -77,91 +86,25 @@ desired effect
         <div class="col-md-12">
           <div class="box box-info">
             <div class="box-header with-border">
-              <h3 class="box-title">List <?php echo ucwords($this->router->fetch_class()); ?></h3>
+              <h3 class="box-title">Detail <?php echo ucwords($this->router->fetch_class()); ?></h3>
             </div>
             <div class="box-body">
-              
-            <table id="list-data" class="table table-bordered table-hover">
-                <thead>
-                <tr>
-                  <th>No</th>
-                  <th>Amaliyah</th>
-                  <th>Kategori</th>
-                  <th>Kode Aktifitas</th>
-                  <th>Aksi</th>
-                </tr>
-                </thead>
-                <tbody>
-                <?php 
-                $no = 1;
-                foreach($aktifitas as $row):
-                ?>
-                <tr>
-                  <td><?php echo $no; ?></td>
-                  <td><?php echo $row->amaliyah;; ?></td>
-                  <td>
-                    <?php echo $row->kategori == "w" ? "Wajib" : "Sunnah"; ?>
-                  </td>
-                  <td><?php echo $row->kode_aktifitas; ?></td>
-                  <td>
-                    <a href="<?php echo site_url('aktifitas/edit/' . $row->id); ?>">
-                      <button class="btn btn-primary">
-                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-                      </button>
+              <div class="row">
+                <span class="col-md-10"><h2><?php echo $hadist->perihal; ?></h2></span>
+                <div class="col-md-2">
+                  <div class="btn-group pull-right" role="group">
+                    <a class="btn btn-primary" href="<?php echo site_url('hadist/edit/' . $hadist->id); ?>">
+                      <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                     </a>
-                    <a href="<?php echo site_url('aktifitas/delete_data/' . $row->id); ?>">
-                      <button class="btn btn-danger">
-                        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-                      </button>
+                    <a class="btn btn-danger" href="<?php echo site_url('hadist/delete_data/' . $hadist->id); ?>">
+                      <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
                     </a>
-                  </td>
-                </tr>
-                <?php 
-                $no++;
-                endforeach;
-                ?>
-                </tfoot>
-              </table>
-            </div>
-          </div>
-          <div class="box box-danger">
-            <div class="box-header with-border">
-              <h3 class="box-title">Input <?php echo ucwords($this->router->fetch_class()); ?></h3>
-            </div>
-            <div class="box-body">
-              <form role="form" action="<?php echo site_url('aktifitas/add_data'); ?>" method="post">
-                <!-- text input -->
-                <div class="form-group">
-                  <label>Amaliyah</label>
-                  <input type="text" name="amaliyah"class="form-control" placeholder="Sholat, Puasa, Infaq, ...">
-                </div>
-                <!-- radio -->
-                <div class="form-group">
-                  <label>Hukum Amaliyah</label>
-                  <div class="radio">
-                    <label>
-                      <input type="radio" name="kategori" id="optionsRadios1" value="w">
-                      Wajib
-                    </label>
-                  </div>
-                  <div class="radio">
-                    <label>
-                      <input type="radio" name="kategori" id="optionsRadios2" value="s">
-                      Sunnah
-                    </label>
                   </div>
                 </div>
-                <!-- text input -->
-                <div class="form-group">
-                  <label>Kode Amaliyah</label>
-                  <input type="text" name="kode_aktifitas" class="form-control" placeholder="sh-subuh, sh-dzuhur, ...">
-                </div>
-                <div class="form-group">
-                  <button type="submit" class="btn btn-primary pull-right">Submit</button>
-                </div>
-              </form>
+              </div>
+              <p><?php echo $hadist->isi; ?></p>
+              <p class="pull-right">Riwayat <?php echo $hadist->riwayat; ?></p>
             </div>
-            <!-- /.box-body -->
           </div>
         </div>
       </div>
@@ -263,18 +206,18 @@ desired effect
 
 <!-- jQuery 3 -->
 <script src="<?php echo base_url(); ?>vendor/jquery/dist/jquery.min.js"></script>
-<!-- Bootstrap 3.3.7 -->
-<script src="<?php echo base_url(); ?>vendor/bootstrap/dist/js/bootstrap.min.js"></script>
 <!-- DataTables -->
 <script src="<?php echo base_url(); ?>vendor/datatables.net/js/jquery.dataTables.min.js"></script>
 <script src="<?php echo base_url(); ?>vendor/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<!-- Bootstrap 3.3.7 -->
+<script src="<?php echo base_url(); ?>vendor/bootstrap/dist/js/bootstrap.min.js"></script>
 <!-- AdminLTE App -->
 <script src="<?php echo base_url(); ?>assets/js/adminlte.min.js"></script>
 <!-- page script -->
 <script>
   $(function () {
     $('#list-data').DataTable()
-  })
+  });
 </script>
 </body>
 </html>
