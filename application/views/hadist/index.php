@@ -11,11 +11,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
 	<!-- Tell the browser to be responsive to screen width -->
 	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 	<!-- Bootstrap 3.3.7 -->
-	<link rel="stylesheet" href="<?php echo base_url(); ?>vendor/bootstrap/dist/css/bootstrap.min.css">
+	<link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/bootstrap/dist/css/bootstrap.min.css">
 	<!-- Font Awesome -->
-	<link rel="stylesheet" href="<?php echo base_url(); ?>vendor/font-awesome/css/font-awesome.min.css">
+	<link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/font-awesome/css/font-awesome.min.css">
 	<!-- Ionicons -->
-	<link rel="stylesheet" href="<?php echo base_url(); ?>vendor/Ionicons/css/ionicons.min.css">
+	<link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/Ionicons/css/ionicons.min.css">
 	<!-- Theme style -->
 	<link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/AdminLTE.min.css">
 	<!-- AdminLTE Skins. Choose a skin from the css/skins
@@ -25,17 +25,17 @@ scratch. This page gets rid of all links and provides the needed markup only.
 	<link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/skins/skin-red.min.css">
 
 	<!-- Morris chart -->
-	<link rel="stylesheet" href="<?php echo base_url(); ?>vendor/morris.js/morris.css">
+	<link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/morris.js/morris.css">
 	<!-- jvectormap -->
-	<link rel="stylesheet" href="<?php echo base_url(); ?>vendor/jvectormap/jquery-jvectormap.css">
+	<link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/jvectormap/jquery-jvectormap.css">
 	<!-- Date Picker -->
-	<link rel="stylesheet" href="<?php echo base_url(); ?>vendor/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
+	<link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
 	<!-- Daterange picker -->
-	<link rel="stylesheet" href="<?php echo base_url(); ?>vendor/bootstrap-daterangepicker/daterangepicker.css">
+	<link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/bootstrap-daterangepicker/daterangepicker.css">
   <!-- data tables -->
-	<link rel="stylesheet" href="<?php echo base_url(); ?>vendor/datatables.net-bs/css/dataTables.bootstrap.min.css">
+	<link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/datatables.net-bs/css/dataTables.bootstrap.min.css">
 	<!-- bootstrap wysihtml5 - text editor -->
-	<link rel="stylesheet" href="<?php echo base_url(); ?>vendor/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
+	<link rel="stylesheet" href="<?php echo base_url(); ?>assets/vendor/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
 
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -261,12 +261,12 @@ desired effect
 <!-- REQUIRED JS SCRIPTS -->
 
 <!-- jQuery 3 -->
-<script src="<?php echo base_url(); ?>vendor/jquery/dist/jquery.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/vendor/jquery/dist/jquery.min.js"></script>
 <!-- DataTables -->
-<script src="<?php echo base_url(); ?>vendor/datatables.net/js/jquery.dataTables.min.js"></script>
-<script src="<?php echo base_url(); ?>vendor/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/vendor/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/vendor/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
 <!-- Bootstrap 3.3.7 -->
-<script src="<?php echo base_url(); ?>vendor/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/vendor/bootstrap/dist/js/bootstrap.min.js"></script>
 <!-- AdminLTE App -->
 <script src="<?php echo base_url(); ?>assets/js/adminlte.min.js"></script>
 <!-- page script -->
