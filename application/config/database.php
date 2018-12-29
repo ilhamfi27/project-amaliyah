@@ -70,7 +70,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | The $query_builder variables lets you determine whether or not to load
 | the query builder class.
 */
-$active_group = 'default';
+
+if(getenv('DEPLOY_ENV') !== NULL){
+	if(getenv('DEPLOY_ENV') === 'staging'){
+		$active_group = 'staging';
+	}
+} else {
+	$active_group = 'default';	
+}
+
 $query_builder = TRUE;
 
 $db['default'] = array(
@@ -78,9 +86,31 @@ $db['default'] = array(
 	'hostname' => 'localhost',
 	'username' => 'root',
 	'password' => '',
-	// 'database' => 'amaliyah-app',
 	'database' => 'amaliyah-app_develop',
 	'dbdriver' => 'mysqli',
+	'dbprefix' => '',
+	'pconnect' => FALSE,
+	'db_debug' => (ENVIRONMENT !== 'production'),
+	'cache_on' => FALSE,
+	'cachedir' => '',
+	'char_set' => 'utf8',
+	'dbcollat' => 'utf8_general_ci',
+	'swap_pre' => '',
+	'encrypt' => FALSE,
+	'compress' => FALSE,
+	'stricton' => FALSE,
+	'failover' => array(),
+	'save_queries' => TRUE
+);
+
+$db['staging'] = array(
+	'dsn'	=> '',
+	'hostname' => 'ec2-54-235-169-191.compute-1.amazonaws.com',
+	'username' => 'ldgobjxthdafsq',
+	'password' => '5e86590810d8b1bb5616ba0a639aba44625ebe2fc4ee2d3fff3a1b4899cc071c',
+	'database' => 'd1nfglarse9it8',
+	'dbdriver' => 'postgre',
+	'port'	   => '5432',
 	'dbprefix' => '',
 	'pconnect' => FALSE,
 	'db_debug' => (ENVIRONMENT !== 'production'),
