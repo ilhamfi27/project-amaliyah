@@ -26,8 +26,8 @@ class Migration_create_table_amaliyah extends CI_Migration{
                     'type' => 'CHAR',
                     'constraint' => 1
                 ), 
-                'waktu TIMESTAMP DEFAULT CURRENT_TIMESTAMP', 
-                'tanggal datetime DEFAULT CURRENT_TIMESTAMP',
+                'waktu timestamp  DEFAULT CURRENT_TIMESTAMP', 
+                'tanggal timestamp  DEFAULT CURRENT_TIMESTAMP',
                 'CONSTRAINT fk_id_user_amaliyah FOREIGN KEY (id_user) REFERENCES users(id)',
                 'CONSTRAINT fk_id_aktifitas_amaliyah FOREIGN KEY (id_aktifitas) REFERENCES aktifitas(id)'
             )
