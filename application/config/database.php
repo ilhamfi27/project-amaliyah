@@ -71,7 +71,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | the query builder class.
 */
 
-if($_ENV['CI_ENV'] === 'staging'){
+if(isset($_ENV['CI_ENV']) && $_ENV['CI_ENV'] === 'staging'){
 	$active_group = 'staging';
 } else {
 	$active_group = 'default';	

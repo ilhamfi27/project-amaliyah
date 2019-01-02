@@ -23,7 +23,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
-$config['base_url'] = $_ENV['CI_ENV'] === "staging" ? 'https://amaliyah-app-staging.herokuapp.com/' : 'http://localhost/amaliyah-app';
+$config['base_url'] = isset($_ENV['CI_ENV']) && $_ENV['CI_ENV'] === "staging" ? 'https://amaliyah-app-staging.herokuapp.com/' : 'http://localhost/amaliyah-app';
 
 /*
 |--------------------------------------------------------------------------
