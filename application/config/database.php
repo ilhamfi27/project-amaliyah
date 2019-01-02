@@ -71,7 +71,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | the query builder class.
 */
 
-if(getenv('DEPLOY_ENV') === 'staging'){
+if($_ENV('DEPLOY_ENV') === 'staging'){
 	$active_group = 'staging';
 } else {
 	$active_group = 'default';	
