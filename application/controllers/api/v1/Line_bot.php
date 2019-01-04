@@ -41,18 +41,18 @@ class Line_bot extends CI_Controller{
         $this->app->get('/api/line/webhook', function ($request, $response) {
             return $response->withStatus(200);
         });
-        $this->app->post('/api/line/webhook', function ($request, $response){
-            
-            // set false for production
-            $pass_signature = true;
-            
-            // set LINE channel_access_token and channel_secret
-            $channel_access_token = isset($_ENV['CHANNEL_ACCESS_TOKEN']) ? $_ENV['CHANNEL_ACCESS_TOKEN'] : "";
-            $channel_secret = isset($_ENV['CHANNEL_SECRET']) ? $_ENV['CHANNEL_SECRET'] : "";
-            
-            // bot object initiation
-            $httpClient = new CurlHTTPClient($channel_access_token);
-            $bot = new LINEBot($httpClient, ['channelSecret' => $channel_secret]);
+        
+        // set false for production
+        $pass_signature = true;
+        
+        // set LINE channel_access_token and channel_secret
+        $channel_access_token = isset($_ENV['CHANNEL_ACCESS_TOKEN']) ? $_ENV['CHANNEL_ACCESS_TOKEN'] : "";
+        $channel_secret = isset($_ENV['CHANNEL_SECRET']) ? $_ENV['CHANNEL_SECRET'] : "";
+        
+        // bot object initiation
+        $httpClient = new CurlHTTPClient($channel_access_token);
+        $bot = new LINEBot($httpClient, ['channelSecret' => $channel_secret]);
+        $this->app->post('/api/line/webhook', function ($request, $response) use ($bot, $pass_signature){
 
             // get request body and line signature header
             $body       = file_get_contents('php://input');
