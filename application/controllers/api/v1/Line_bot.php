@@ -33,7 +33,7 @@ class Line_bot extends CI_Controller{
             return "hello, it works!";
         });
         $this->app->get('/api/line/webhook', function ($request, $response) {
-            return $response->withStatus(200, 'Success!');
+            return $response->withStatus(200);
         });
         $this->app->post('/api/line/webhook', function ($request, $response)
         {
