@@ -18,12 +18,11 @@ class Line_bot extends CI_Controller{
         if($this->environment_is("development")){
             $this->dotenv_initiation();
         }
-        // $this->line_bot_initiation();
         $this->slim_config();
         $this->slim_api();
     }
     
-    public function index(){}
+    public function index(){ echo "Hi, there!"; }
     public function webhook(){}
     
     // private function section
@@ -35,8 +34,8 @@ class Line_bot extends CI_Controller{
     }
 
     private function slim_api(){
-        $this->app->get('/api/line/', function () {
-            return "hello, it works!";
+        $this->app->get('/api/line/', function ($request, $response) {
+            return $response->withStatus(200);
         });
         $this->app->get('/api/line/webhook', function ($request, $response) {
             return $response->withStatus(200);
@@ -52,6 +51,7 @@ class Line_bot extends CI_Controller{
         // bot object initiation
         $httpClient = new CurlHTTPClient($channel_access_token);
         $bot = new LINEBot($httpClient, ['channelSecret' => $channel_secret]);
+
         $this->app->post('/api/line/webhook', function ($request, $response) use ($bot, $pass_signature){
 
             // get request body and line signature header
