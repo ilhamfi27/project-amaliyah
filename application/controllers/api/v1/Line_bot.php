@@ -13,7 +13,8 @@ use LINE\LINEBot\Exception\InvalidSignatureException;
 
 class Line_bot extends CI_Controller{
     private $app;
-    private $bot;
+    private $line_bot;
+    private $pass_signature;
 
     public function __construct() {
         if($this->environment_is("development")){
@@ -22,7 +23,7 @@ class Line_bot extends CI_Controller{
         $this->slim_config();
         
         // set false for production
-        $pass_signature = true;
+        $this->pass_signature = true;
         
         // set LINE channel_access_token and channel_secret
         $channel_access_token = isset($_ENV['CHANNEL_ACCESS_TOKEN']) ? $_ENV['CHANNEL_ACCESS_TOKEN'] : "";
@@ -30,7 +31,7 @@ class Line_bot extends CI_Controller{
         
         // bot object initiation
         $httpClient = new CurlHTTPClient($channel_access_token);
-        $this->bot = new LINEBot($httpClient, ['channelSecret' => $channel_secret]);
+        $this->line_bot = new LINEBot($httpClient, ['channelSecret' => $channel_secret]);
         $this->slim_api();
     }
     
@@ -63,6 +64,8 @@ class Line_bot extends CI_Controller{
         // // bot object initiation
         // $httpClient = new CurlHTTPClient($channel_access_token);
         // $bot = new LINEBot($httpClient, ['channelSecret' => $channel_secret]);
+        $bot            = $this->line_bot;
+        $pass_signature = $this->pass_signature;
 
         $this->app->post('/api/line/webhook', function ($request, $response) use ($bot, $pass_signature){
 
