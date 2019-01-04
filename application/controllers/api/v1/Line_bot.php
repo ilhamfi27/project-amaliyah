@@ -32,8 +32,8 @@ class Line_bot extends CI_Controller{
         $this->app->get('/api_test', function () {
             return "hello, it works!";
         });
-        $this->app->get('/api/line/webhook', function () {
-            return "it,s the webhook!";
+        $this->app->get('/api/line/webhook', function ($request, $response) {
+            return $response->withStatus(200, 'Success!');
         });
         $this->app->post('/api/line/webhook', function ($request, $response)
         {
@@ -63,7 +63,6 @@ class Line_bot extends CI_Controller{
                     $textMessageBuilder = new \LINE\LINEBot\MessageBuilder\TextMessageBuilder($message);
                     $result = $bot->replyMessage($event['replyToken'], $textMessageBuilder);
                     return $result->getHTTPStatus() . ' ' . $result->getRawBody();
-                
                 }
             }
             
