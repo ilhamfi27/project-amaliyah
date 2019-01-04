@@ -13,7 +13,7 @@ use LINE\LINEBot\Exception\InvalidSignatureException;
 
 class Line_bot extends CI_Controller{
     private $app;
-    private $line_bot;
+    private $bot;
     private $pass_signature;
 
     public function __construct() {
@@ -21,7 +21,15 @@ class Line_bot extends CI_Controller{
             $this->dotenv_initiation();
         }
         $this->slim_config();
-        
+        $this->bot_init();
+        $this->slim_api();
+    }
+    
+    public function index(){ echo "Hi, there!"; }
+    public function webhook(){}
+    
+    // private function section
+    private function bot_init(){
         // set false for production
         $this->pass_signature = true;
         
@@ -31,14 +39,9 @@ class Line_bot extends CI_Controller{
         
         // bot object initiation
         $httpClient = new CurlHTTPClient($channel_access_token);
-        $this->line_bot = new LINEBot($httpClient, ['channelSecret' => $channel_secret]);
-        $this->slim_api();
+        $this->bot = new LINEBot($httpClient, ['channelSecret' => $channel_secret]);
     }
-    
-    public function index(){ echo "Hi, there!"; }
-    public function webhook(){}
-    
-    // private function section
+
     private function slim_config(){
         $configs =  [
             'settings' => ['displayErrorDetails' => true],
@@ -54,17 +57,7 @@ class Line_bot extends CI_Controller{
             return $response->withStatus(200);
         });
         
-        // // set false for production
-        // $pass_signature = true;
-        
-        // // set LINE channel_access_token and channel_secret
-        // $channel_access_token = isset($_ENV['CHANNEL_ACCESS_TOKEN']) ? $_ENV['CHANNEL_ACCESS_TOKEN'] : "";
-        // $channel_secret = isset($_ENV['CHANNEL_SECRET']) ? $_ENV['CHANNEL_SECRET'] : "";
-        
-        // // bot object initiation
-        // $httpClient = new CurlHTTPClient($channel_access_token);
-        // $bot = new LINEBot($httpClient, ['channelSecret' => $channel_secret]);
-        $bot            = $this->line_bot;
+        $bot            = $this->bot;
         $pass_signature = $this->pass_signature;
 
         $this->app->post('/api/line/webhook', function ($request, $response) use ($bot, $pass_signature){
