@@ -52,5 +52,5 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $route['default_controller'] = 'user_auth';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
-$route['api_test'] = 'api/v1/Line_bot';
+$route['api/line'] = 'api/v1/Line_bot';
 $route['api/line/webhook'] = 'api/v1/Line_bot/webhook';

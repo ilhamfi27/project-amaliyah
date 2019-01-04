@@ -13,22 +13,17 @@ use LINE\LINEBot\Exception\InvalidSignatureException;
 
 class Line_bot extends CI_Controller{
     private $app;
-    private $channel_access_token;
-    private $channel_secret;
-    private $pass_signature;
-    private $httpClient;
-    private $bot;
-
 
     public function __construct() {
         if($this->environment_is("development")){
             $this->dotenv_initiation();
         }
+        // $this->line_bot_initiation();
         $this->slim_config();
-        $this->line_bot_initiation();
         $this->slim_api();
     }
-
+    
+    public function index(){}
     public function webhook(){}
     
     // private function section
@@ -39,21 +34,8 @@ class Line_bot extends CI_Controller{
         $this->app = new Slim\App($configs);
     }
 
-    private function line_bot_initiation(){
-        // set false for production
-        $this->pass_signature = true;
-        
-        // set LINE channel_access_token and channel_secret
-        $this->channel_access_token = isset($_ENV['CHANNEL_ACCESS_TOKEN']) ? $_ENV['CHANNEL_ACCESS_TOKEN'] : "";
-        $this->channel_secret = isset($_ENV['CHANNEL_SECRET']) ? $_ENV['CHANNEL_SECRET'] : "";
-        
-        // bot object initiation
-        $this->httpClient = new CurlHTTPClient($this->channel_access_token);
-        $this->bot = new LINEBot($this->httpClient, ['channelSecret' => $this->channel_secret]);
-    }
-
     private function slim_api(){
-        $this->app->get('/api_test', function () {
+        $this->app->get('/api/line/', function () {
             return "hello, it works!";
         });
         $this->app->get('/api/line/webhook', function ($request, $response) {
@@ -61,9 +43,20 @@ class Line_bot extends CI_Controller{
         });
         $this->app->post('/api/line/webhook', function ($request, $response){
             
+            // set false for production
+            $pass_signature = true;
+            
+            // set LINE channel_access_token and channel_secret
+            $channel_access_token = isset($_ENV['CHANNEL_ACCESS_TOKEN']) ? $_ENV['CHANNEL_ACCESS_TOKEN'] : "";
+            $channel_secret = isset($_ENV['CHANNEL_SECRET']) ? $_ENV['CHANNEL_SECRET'] : "";
+            
+            // bot object initiation
+            $httpClient = new CurlHTTPClient($channel_access_token);
+            $bot = new LINEBot($httpClient, ['channelSecret' => $channel_secret]);
+
             // get request body and line signature header
-            $body        = file_get_contents('php://input');
-            $signature = isset($_SERVER['HTTP_X_LINE_SIGNATURE']) ? $_SERVER['HTTP_X_LINE_SIGNATURE'] : '';
+            $body       = file_get_contents('php://input');
+            $signature  = isset($_SERVER['HTTP_X_LINE_SIGNATURE']) ? $_SERVER['HTTP_X_LINE_SIGNATURE'] : '';
             
             // log body and signature
             file_put_contents('php://stderr', 'Body: '.$body);
@@ -76,6 +69,17 @@ class Line_bot extends CI_Controller{
             // is this request comes from LINE?
             if($_ENV['PASS_SIGNATURE'] == false && ! SignatureValidator::validateSignature($body, $_ENV['CHANNEL_SECRET'], $signature)){
                 return $response->withStatus(400, 'Invalid signature');
+            }
+
+            $data = json_decode($body, TRUE);
+            if (is_array($data['events'])) {
+                foreach ($data['events'] as $event) {
+                    if ($event['message']['type'] === 'text') {
+                        // send same message as reply to user
+                        $result = $bot->replyText($event['replyToken'], $event['message']['text']);
+                        return $response->withJson($result->getJSONDecodedBody(), $result->getHTTPStatus());
+                    }
+                }
             }
         });
         $this->app->run();
