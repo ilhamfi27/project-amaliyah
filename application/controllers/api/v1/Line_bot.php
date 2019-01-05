@@ -25,8 +25,9 @@ class Line_bot extends CI_Controller{
         $this->slim_api();
     }
     
-    public function index(){ echo "Hi, there!"; }
+    public function index(){}
     public function webhook(){}
+    public function api_command_development(){}
     
     // private function section
     private function bot_init(){
@@ -53,18 +54,31 @@ class Line_bot extends CI_Controller{
         $this->app->get('/api/line/', function ($request, $response) {
             return $response->withStatus(200);
         });
+        
         $this->app->get('/api/line/webhook', function ($request, $response) {
+            echo "Hi, There!";
             return $response->withStatus(200);
         });
         
-        $bot            = $this->bot;
-        $pass_signature = $this->pass_signature;
-
-        $this->app->post('/api/line/webhook', function ($request, $response) use ($bot, $pass_signature){
-
+        $this->app->post('/api/v1/line_bot/api_command_development', function ($request, $response) {
+            $body = file_get_contents('php://input');
+            $data = json_decode($body, TRUE);
+            if (is_array($data['events'])) {
+                foreach ($data['events'] as $event) {
+                    if($event['message']['type'] === 'text'){
+                        $message_per_word = explode(" ",$event['message']['text']);
+                        if($message_per_word[0] == "/help"){
+                            echo "OK!";
+                        }
+                    }
+                }
+            }
+        });
+        
+        $this->app->post('/api/line/webhook', function ($request, $response){
             // get request body and line signature header
-            $body       = file_get_contents('php://input');
-            $signature  = isset($_SERVER['HTTP_X_LINE_SIGNATURE']) ? $_SERVER['HTTP_X_LINE_SIGNATURE'] : '';
+            $body                   = file_get_contents('php://input');
+            $this->pass_signature   = isset($_SERVER['HTTP_X_LINE_SIGNATURE']) ? $_SERVER['HTTP_X_LINE_SIGNATURE'] : '';
             
             // log body and signature
             file_put_contents('php://stderr', 'Body: '.$body);
@@ -84,7 +98,7 @@ class Line_bot extends CI_Controller{
                 foreach ($data['events'] as $event) {
                     if ($event['message']['type'] === 'text') {
                         // send same message as reply to user
-                        $result = $bot->replyText($event['replyToken'], $event['message']['text']);
+                        $result = $this->bot->replyText($event['replyToken'], $event['message']['text']);
                         return $response->withJson($result->getJSONDecodedBody(), $result->getHTTPStatus());
                     }
                 }
