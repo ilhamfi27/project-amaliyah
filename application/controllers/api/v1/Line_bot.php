@@ -22,61 +22,23 @@ class Line_bot extends CI_Controller{
         }
         $this->slim_config();
         $this->bot_init();
-        $this->slim_api();
     }
     
-    public function index(){}
-    public function webhook(){}
-    public function api_command_development(){}
-    
-    // private function section
-    private function bot_init(){
-        // set false for production
-        $this->pass_signature = true;
-        
-        // set LINE channel_access_token and channel_secret
-        $channel_access_token = isset($_ENV['CHANNEL_ACCESS_TOKEN']) ? $_ENV['CHANNEL_ACCESS_TOKEN'] : "";
-        $channel_secret = isset($_ENV['CHANNEL_SECRET']) ? $_ENV['CHANNEL_SECRET'] : "";
-        
-        // bot object initiation
-        $httpClient = new CurlHTTPClient($channel_access_token);
-        $this->bot = new LINEBot($httpClient, ['channelSecret' => $channel_secret]);
-    }
-
-    private function slim_config(){
-        $configs =  [
-            'settings' => ['displayErrorDetails' => true],
-        ];
-        $this->app = new Slim\App($configs);
-    }
-
-    private function slim_api(){
+    public function index(){
         $this->app->get('/api/line/', function ($request, $response) {
             return $response->withStatus(200);
         });
-        
+        $this->app->run();
+    }
+    public function webhook(){
+        $bot            = $this->bot;
+        $pass_signature = $this->pass_signature;
+
         $this->app->get('/api/line/webhook', function ($request, $response) {
             echo "Hi, There!";
             return $response->withStatus(200);
         });
-        
-        $this->app->post('/api/v1/line_bot/api_command_development', function ($request, $response) {
-            $body = file_get_contents('php://input');
-            $data = json_decode($body, TRUE);
-            if (is_array($data['events'])) {
-                foreach ($data['events'] as $event) {
-                    if($event['message']['type'] === 'text'){
-                        $message_per_word = explode(" ",$event['message']['text']);
-                        if($message_per_word[0] == "/help"){
-                            echo "OK!";
-                        }
-                    }
-                }
-            }
-        });
-        
-        $bot            = $this->bot;
-        $pass_signature = $this->pass_signature;
+
         $this->app->post('/api/line/webhook', function ($request, $response) use ($bot, $pass_signature){
             // get request body and line signature header
             $body       = file_get_contents('php://input');
@@ -107,6 +69,44 @@ class Line_bot extends CI_Controller{
             }
         });
         $this->app->run();
+    }
+    public function api_command_development(){        
+        $this->app->post('/api/v1/line_bot/api_command_development', function ($request, $response) {
+            $body = file_get_contents('php://input');
+            $data = json_decode($body, TRUE);
+            if (is_array($data['events'])) {
+                foreach ($data['events'] as $event) {
+                    if($event['message']['type'] === 'text'){
+                        $message_per_word = explode(" ",$event['message']['text']);
+                        if($message_per_word[0] == "/help"){
+                            echo "OK!";
+                        }
+                    }
+                }
+            }
+        });
+        $this->app->run();
+    }
+    
+    // private function section
+    private function bot_init(){
+        // set false for production
+        $this->pass_signature = true;
+        
+        // set LINE channel_access_token and channel_secret
+        $channel_access_token = isset($_ENV['CHANNEL_ACCESS_TOKEN']) ? $_ENV['CHANNEL_ACCESS_TOKEN'] : "";
+        $channel_secret = isset($_ENV['CHANNEL_SECRET']) ? $_ENV['CHANNEL_SECRET'] : "";
+        
+        // bot object initiation
+        $httpClient = new CurlHTTPClient($channel_access_token);
+        $this->bot = new LINEBot($httpClient, ['channelSecret' => $channel_secret]);
+    }
+
+    private function slim_config(){
+        $configs =  [
+            'settings' => ['displayErrorDetails' => true],
+        ];
+        $this->app = new Slim\App($configs);
     }
     
     private function environment_is($environment){
