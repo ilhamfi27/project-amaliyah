@@ -79,7 +79,14 @@ class Line_bot extends CI_Controller{
                     if($event['message']['type'] === 'text'){
                         $message_per_word = explode(" ",$event['message']['text']);
                         if($message_per_word[0] == "/help"){
-                            echo "OK!";
+                            $text = "
+                            Menu perintah bot:
+                            /daftar = mendaftarkan diri untuk menjadi member
+                            /lapor	= melaporkan amaliyah sehari-hari
+                            /cek	= mengecek amaliyah yang sudah atau belum dilaporkan
+                            /about	= tentang mutabaah chat bot
+                            ";
+                            echo $text;
                         }
                     }
                 }
