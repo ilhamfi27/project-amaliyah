@@ -61,9 +61,22 @@ class Line_bot extends CI_Controller{
             if (is_array($data['events'])) {
                 foreach ($data['events'] as $event) {
                     if ($event['message']['type'] === 'text') {
-                        // send same message as reply to user
-                        $result = $bot->replyText($event['replyToken'], $event['message']['text']);
-                        return $response->withJson($result->getJSONDecodedBody(), $result->getHTTPStatus());
+                        $message_per_word = explode(" ",$event['message']['text']);
+                        if($message_per_word[0] == "/help"){
+                            $text = "
+                            Menu perintah bot:
+                            /daftar = mendaftarkan diri untuk menjadi member
+                            /lapor	= melaporkan amaliyah sehari-hari
+                            /cek	= mengecek amaliyah yang sudah atau belum dilaporkan
+                            /about	= tentang mutabaah chat bot
+                            ";
+                            $result = $bot->replyText($event['replyToken'], $text);
+                            return $response->withJson($result->getJSONDecodedBody(), $result->getHTTPStatus());
+                        } else {
+                            // send same message as reply to user
+                            $result = $bot->replyText($event['replyToken'], $event['message']['text']);
+                            return $response->withJson($result->getJSONDecodedBody(), $result->getHTTPStatus());
+                        }
                     }
                 }
             }
