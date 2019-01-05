@@ -75,14 +75,16 @@ class Line_bot extends CI_Controller{
             }
         });
         
-        $this->app->post('/api/line/webhook', function ($request, $response){
+        $bot            = $this->bot;
+        $pass_signature = $this->pass_signature;
+        $this->app->post('/api/line/webhook', function ($request, $response) use ($bot, $pass_signature){
             // get request body and line signature header
-            $body                   = file_get_contents('php://input');
-            $this->pass_signature   = isset($_SERVER['HTTP_X_LINE_SIGNATURE']) ? $_SERVER['HTTP_X_LINE_SIGNATURE'] : '';
+            $body       = file_get_contents('php://input');
+            $signature  = isset($_SERVER['HTTP_X_LINE_SIGNATURE']) ? $_SERVER['HTTP_X_LINE_SIGNATURE'] : '';
             
             // log body and signature
             file_put_contents('php://stderr', 'Body: '.$body);
-
+            
             // is LINE_SIGNATURE exists in request header?
             if (empty($signature)){
                 return $response->withStatus(400, 'Signature not set');
@@ -92,13 +94,13 @@ class Line_bot extends CI_Controller{
             if($_ENV['PASS_SIGNATURE'] == false && ! SignatureValidator::validateSignature($body, $_ENV['CHANNEL_SECRET'], $signature)){
                 return $response->withStatus(400, 'Invalid signature');
             }
-
+            
             $data = json_decode($body, TRUE);
             if (is_array($data['events'])) {
                 foreach ($data['events'] as $event) {
                     if ($event['message']['type'] === 'text') {
                         // send same message as reply to user
-                        $result = $this->bot->replyText($event['replyToken'], $event['message']['text']);
+                        $result = $bot->replyText($event['replyToken'], $event['message']['text']);
                         return $response->withJson($result->getJSONDecodedBody(), $result->getHTTPStatus());
                     }
                 }
