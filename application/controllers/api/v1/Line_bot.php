@@ -25,7 +25,7 @@ class Line_bot extends CI_Controller{
     }
     
     public function index(){
-        $this->app->get('/api/line/', function ($request, $response) {
+        $this->app->get('/api/v1/line_bot/', function ($request, $response) {
             return $response->withStatus(200);
         });
         $this->app->run();
@@ -34,12 +34,12 @@ class Line_bot extends CI_Controller{
         $bot            = $this->bot;
         $pass_signature = $this->pass_signature;
 
-        $this->app->get('/api/line/webhook', function ($request, $response) {
+        $this->app->get('/api/v1/line_bot/webhook', function ($request, $response) {
             echo "Hi, There!";
             return $response->withStatus(200);
         });
 
-        $this->app->post('/api/line/webhook', function ($request, $response) use ($bot, $pass_signature){
+        $this->app->post('/api/v1/line_bot/webhook', function ($request, $response) use ($bot, $pass_signature){
             // get request body and line signature header
             $body       = file_get_contents('php://input');
             $signature  = isset($_SERVER['HTTP_X_LINE_SIGNATURE']) ? $_SERVER['HTTP_X_LINE_SIGNATURE'] : '';
@@ -63,14 +63,13 @@ class Line_bot extends CI_Controller{
                     if ($event['message']['type'] === 'text') {
                         $message_per_word = explode(" ",$event['message']['text']);
                         if($message_per_word[0] == "/help"){
-                            $text = "Menu perintah bot:\n/daftar = mendaftarkan diri untuk menjadi member\n/lapor	= melaporkan amaliyah sehari-hari\n/cek	= mengecek amaliyah yang sudah atau belum dilaporkan\n/about	= tentang mutabaah chat bot";
-                            $result = $bot->replyText($event['replyToken'], $text);
-                            return $response->withJson($result->getJSONDecodedBody(), $result->getHTTPStatus());
+                            $replyText = "Menu perintah bot:\n-/daftar = mendaftarkan diri untuk menjadi member\n-/lapor	= melaporkan amaliyah sehari-hari\n-/cek	= mengecek amaliyah yang sudah atau belum dilaporkan\n-/about	= tentang mutabaah chat bot\n\nketik\n/help <menuhelp>\nuntuk info menu lebih detail";
+                            $result = $bot->replyText($event['replyToken'], $replyText);
                         } else {
                             // send same message as reply to user
                             $result = $bot->replyText($event['replyToken'], $event['message']['text']);
-                            return $response->withJson($result->getJSONDecodedBody(), $result->getHTTPStatus());
                         }
+                        return $response->withJson($result->getJSONDecodedBody(), $result->getHTTPStatus());
                     }
                 }
             }
@@ -86,14 +85,23 @@ class Line_bot extends CI_Controller{
                     if($event['message']['type'] === 'text'){
                         $message_per_word = explode(" ",$event['message']['text']);
                         if($message_per_word[0] == "/help"){
-                            $text = "
-                            Menu perintah bot:
-                            /daftar = mendaftarkan diri untuk menjadi member
-                            /lapor	= melaporkan amaliyah sehari-hari
-                            /cek	= mengecek amaliyah yang sudah atau belum dilaporkan
-                            /about	= tentang mutabaah chat bot
-                            ";
-                            echo $text;
+                            $replyText = "";
+                            if(isset($message_per_word[1]) && $message_per_word[1] !== ""){
+                                if ($message_per_word[1] === 'daftar') {
+                                    $replyText = "Anda bertanya mengenai daftar";
+                                } else if ($message_per_word[1] === 'lapor') {
+                                    $replyText = "Anda bertanya mengenai lapor";
+                                } else if ($message_per_word[1] === 'cek') {
+                                    $replyText = "Anda bertanya mengenai cek";
+                                } else if ($message_per_word[1] === 'about') {
+                                    $replyText = "Anda bertanya mengenai about";
+                                } else {
+                                    $replyText = "Tidak ada dalam pilihan";
+                                }
+                            } else {
+                                $replyText = "Menu perintah bot:\n-/daftar = mendaftarkan diri untuk menjadi member\n-/lapor	= melaporkan amaliyah sehari-hari\n-/cek	= mengecek amaliyah yang sudah atau belum dilaporkan\n-/about	= tentang mutabaah chat bot\n\nketik\n/help <menuhelp>\nuntuk info menu lebih detail\ncontoh : /help daftar";
+                            }
+                            echo $replyText;
                         }
                     }
                 }

@@ -14,7 +14,8 @@
 		"php": ">=5.5",
 		"linecorp/line-bot-sdk": "^2.3",
 		"slim/slim": "^3.0",
-		"vlucas/phpdotenv": "^2.4"
+		"vlucas/phpdotenv": "^2.4",
+		"chriskacerguis/codeigniter-restserver": "^3.0"
 	},
 	"suggest": {
 		"paragonie/random_compat": "Provides better randomness in PHP 5.x"
