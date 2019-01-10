@@ -10,106 +10,62 @@ use LINE\LINEBot\Event\MessageEvent;
 use LINE\LINEBot\Event\MessageEvent\TextMessage;
 use LINE\LINEBot\Exception\InvalidEventRequestException;
 use LINE\LINEBot\Exception\InvalidSignatureException;
+use Restserver\Libraries\REST_Controller;
 
-class Line_bot extends CI_Controller{
+class Line_bot extends REST_Controller{
     private $app;
     private $bot;
     private $pass_signature;
 
     public function __construct() {
+        parent::__construct();
         if($this->environment_is("development")){
             $this->dotenv_initiation();
         }
-        $this->slim_config();
         $this->bot_init();
     }
     
-    public function index(){
-        $this->app->get('/api/v1/line_bot/', function ($request, $response) {
-            return $response->withStatus(200);
-        });
-        $this->app->run();
+    public function webhook_get(){
+        echo "Hi, There!";
+        return $this->response(NULL, 200);
     }
-    public function webhook(){
-        $bot            = $this->bot;
-        $pass_signature = $this->pass_signature;
 
-        $this->app->get('/api/v1/line_bot/webhook', function ($request, $response) {
-            echo "Hi, There!";
-            return $response->withStatus(200);
-        });
+    public function webhook_post(){
+        // get request body and line signature header
+        $body       = file_get_contents('php://input');
+        $signature  = isset($_SERVER['HTTP_X_LINE_SIGNATURE']) ? $_SERVER['HTTP_X_LINE_SIGNATURE'] : '';
+        
+        // log body and signature
+        file_put_contents('php://stderr', 'Body: '.$body);
+        
+        // is LINE_SIGNATURE exists in request header?
+        if (empty($signature)){
+            return $this->response(NULL, 400);
+        }
 
-        $this->app->post('/api/v1/line_bot/webhook', function ($request, $response) use ($bot, $pass_signature){
-            // get request body and line signature header
-            $body       = file_get_contents('php://input');
-            $signature  = isset($_SERVER['HTTP_X_LINE_SIGNATURE']) ? $_SERVER['HTTP_X_LINE_SIGNATURE'] : '';
-            
-            // log body and signature
-            file_put_contents('php://stderr', 'Body: '.$body);
-            
-            // is LINE_SIGNATURE exists in request header?
-            if (empty($signature)){
-                return $response->withStatus(400, 'Signature not set');
-            }
-
-            // is this request comes from LINE?
-            if($_ENV['PASS_SIGNATURE'] == false && ! SignatureValidator::validateSignature($body, $_ENV['CHANNEL_SECRET'], $signature)){
-                return $response->withStatus(400, 'Invalid signature');
-            }
-            
-            $data = json_decode($body, TRUE);
-            if (is_array($data['events'])) {
-                foreach ($data['events'] as $event) {
-                    if ($event['message']['type'] === 'text') {
-                        $message_per_word = explode(" ",$event['message']['text']);
-                        if($message_per_word[0] == "/help"){
-                            $replyText = "Menu perintah bot:\n-/daftar = mendaftarkan diri untuk menjadi member\n-/lapor	= melaporkan amaliyah sehari-hari\n-/cek	= mengecek amaliyah yang sudah atau belum dilaporkan\n-/about	= tentang mutabaah chat bot\n\nketik\n/help <menuhelp>\nuntuk info menu lebih detail";
-                            $result = $bot->replyText($event['replyToken'], $replyText);
-                        } else {
-                            // send same message as reply to user
-                            $result = $bot->replyText($event['replyToken'], $event['message']['text']);
-                        }
-                        return $response->withJson($result->getJSONDecodedBody(), $result->getHTTPStatus());
+        // is this request comes from LINE?
+        if($_ENV['PASS_SIGNATURE'] == false && ! SignatureValidator::validateSignature($body, $_ENV['CHANNEL_SECRET'], $signature)){
+            return $this->response(NULL, 400);
+        }
+        
+        $data = json_decode($body, TRUE);
+        if (is_array($data['events'])) {
+            foreach ($data['events'] as $event) {
+                if ($event['message']['type'] === 'text') {
+                    $message_per_word = explode(" ",$event['message']['text']);
+                    if($message_per_word[0] == "/help"){
+                        $replyText = "Menu perintah bot:\n-/daftar = mendaftarkan diri untuk menjadi member\n-/lapor	= melaporkan amaliyah sehari-hari\n-/cek	= mengecek amaliyah yang sudah atau belum dilaporkan\n-/about	= tentang mutabaah chat bot\n\nketik\n/help <menuhelp>\nuntuk info menu lebih detail";
+                        $result = $this->bot->replyText($event['replyToken'], $replyText);
+                    } else {
+                        // send same message as reply to user
+                        $result = $this->bot->replyText($event['replyToken'], $event['message']['text']);
                     }
+                    return $this->response($result->getJSONDecodedBody(), $result->getHTTPStatus());
                 }
             }
-        });
-        $this->app->run();
+        }
     }
-    public function api_command_development(){        
-        $this->app->post('/api/v1/line_bot/api_command_development', function ($request, $response) {
-            $body = file_get_contents('php://input');
-            $data = json_decode($body, TRUE);
-            if (is_array($data['events'])) {
-                foreach ($data['events'] as $event) {
-                    if($event['message']['type'] === 'text'){
-                        $message_per_word = explode(" ",$event['message']['text']);
-                        if($message_per_word[0] == "/help"){
-                            $replyText = "";
-                            if(isset($message_per_word[1]) && $message_per_word[1] !== ""){
-                                if ($message_per_word[1] === 'daftar') {
-                                    $replyText = "Anda bertanya mengenai daftar";
-                                } else if ($message_per_word[1] === 'lapor') {
-                                    $replyText = "Anda bertanya mengenai lapor";
-                                } else if ($message_per_word[1] === 'cek') {
-                                    $replyText = "Anda bertanya mengenai cek";
-                                } else if ($message_per_word[1] === 'about') {
-                                    $replyText = "Anda bertanya mengenai about";
-                                } else {
-                                    $replyText = "Tidak ada dalam pilihan";
-                                }
-                            } else {
-                                $replyText = "Menu perintah bot:\n-/daftar = mendaftarkan diri untuk menjadi member\n-/lapor	= melaporkan amaliyah sehari-hari\n-/cek	= mengecek amaliyah yang sudah atau belum dilaporkan\n-/about	= tentang mutabaah chat bot\n\nketik\n/help <menuhelp>\nuntuk info menu lebih detail\ncontoh : /help daftar";
-                            }
-                            echo $replyText;
-                        }
-                    }
-                }
-            }
-        });
-        $this->app->run();
-    }
-    
+
     // private function section
     private function bot_init(){
         // set false for production
@@ -122,13 +78,6 @@ class Line_bot extends CI_Controller{
         // bot object initiation
         $httpClient = new CurlHTTPClient($channel_access_token);
         $this->bot = new LINEBot($httpClient, ['channelSecret' => $channel_secret]);
-    }
-
-    private function slim_config(){
-        $configs =  [
-            'settings' => ['displayErrorDetails' => true],
-        ];
-        $this->app = new Slim\App($configs);
     }
     
     private function environment_is($environment){
